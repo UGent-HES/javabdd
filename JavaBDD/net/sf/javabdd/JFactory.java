@@ -6,10 +6,12 @@ package net.sf.javabdd;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -2334,10 +2336,7 @@ public class JFactory extends BDDFactory {
         return res;
     }
 
-    static int supportSize = 0;
-
     int bdd_support(int r) {
-        int n;
         int res = 1;
 
         CHECKa(r, bddfalse);
@@ -2346,49 +2345,30 @@ public class JFactory extends BDDFactory {
             return bddtrue;
 
         /* On-demand allocation of support set */
-        if (supportSize < bddvarnum) {
-            supportSet = new int[bddvarnum];
-            //memset(supportSet, 0, bddvarnum*sizeof(int));
-            supportSize = bddvarnum;
-            supportID = 0;
+        if (supportSet == null) {
+            supportSet = new HashSet<Integer>();
         }
+        supportSet.clear();
 
-        /* Update global variables used to speed up bdd_support()
-         * - instead of always memsetting support to zero, we use
-         *   a change counter.
-         * - and instead of reading the whole array afterwards, we just
-         *   look from 'min' to 'max' used BDD variables.
-         */
-        if (supportID == 0x0FFFFFFF) {
-            /* We probably don't get here -- but let's just be sure */
-            for (int i = 0; i < bddvarnum; ++i)
-                supportSet[i] = 0;
-            supportID = 0;
-        }
-        ++supportID;
-        supportMin = LEVEL(r);
-        supportMax = supportMin;
+        bdd_disable_reorder();
 
         support_rec(r, supportSet);
         bdd_unmark(r);
 
-        bdd_disable_reorder();
-
-        for (n = supportMax; n >= supportMin; --n)
-            if (supportSet[n] == supportID) {
-                int tmp;
-                bdd_addref(res);
-                tmp = bdd_makenode(n, 0, res);
-                bdd_delref(res);
-                res = tmp;
-            }
+        for (int n : supportSet) {
+            int tmp;
+            bdd_addref(res);
+            tmp = bdd_makenode(n, 0, res);
+            bdd_delref(res);
+            res = tmp;
+        }
 
         bdd_enable_reorder();
 
         return res;
     }
 
-    void support_rec(int r, int[] support) {
+    void support_rec(int r, Set<Integer> support) {
 
         if (r < 2)
             return;
@@ -2396,10 +2376,7 @@ public class JFactory extends BDDFactory {
         if (MARKED(r) || LOW(r) == INVALID_BDD)
             return;
 
-        support[LEVEL(r)] = supportID;
-
-        if (LEVEL(r) > supportMax)
-            supportMax = LEVEL(r);
+        support.add(LEVEL(r));
 
         SETMARK(r);
 
@@ -3284,10 +3261,7 @@ public class JFactory extends BDDFactory {
     int replacelast; /* Current last var. level to replace */
     int composelevel; /* Current variable used for compose */
     int miscid; /* Current cache id for other results */
-    int supportID; /* Current ID (true value) for support */
-    int supportMin; /* Min. used level in support calc. */
-    int supportMax; /* Max. used level in support calc. */
-    int[] supportSet; /* The found support set */
+    Set<Integer> supportSet; /* The found support set */
     BddCache applycache; /* Cache for apply results */
     BddCache itecache; /* Cache for ITE results */
     BddCache quantcache; /* Cache for exist/forall results */
