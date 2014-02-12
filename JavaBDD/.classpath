@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="target/**" kind="src" path=""/>
+	<classpathentry excluding="target/**" kind="src" path="">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry sourcepath="/jdd/src" kind="lib" path="jdd.jar"/>
+	<classpathentry kind="lib" path="/Users/karel/morpheus/tlut_flow/third_party/javabdd_src_1.0b2/JavaBDD/jdd.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
