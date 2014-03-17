@@ -3050,7 +3050,7 @@ public class JFactory extends BDDFactory {
                 throw new ReorderException();
             }
 
-            if ((bddfreenum * 100) / bddnodesize <= minfreenodes) {
+            if ((bddfreenum * 100L) / bddnodesize <= minfreenodes) {
                 bdd_noderesize(true);
                 hash2 = NODEHASH(level, low, high);
             }
@@ -4422,7 +4422,7 @@ public class JFactory extends BDDFactory {
         if (usednum_before == 0)
             return 0;
 
-        return (100 * (usednum_before - usednum_after)) / usednum_before;
+        return (int)((100L * (usednum_before - usednum_after)) / usednum_before);
     }
 
     /* (non-Javadoc)
