@@ -401,6 +401,16 @@ public abstract class BDD {
      * @return the variable support of this BDD
      */
     public abstract BDD support();
+    
+    /**
+     * <p>Return the number of variables in the variable support of this BDD. 
+     * The support is all the variables that this BDD depends on.</p>
+     * 
+     * @return the size of the variable support of this BDD
+     */
+    public int supportSize() {
+        throw new RuntimeException("Not implemented");
+    }
 
     /**
      * <p>Returns the result of applying the binary operator <tt>opr</tt> to the

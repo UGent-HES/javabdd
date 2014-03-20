@@ -247,6 +247,12 @@ public class JFactory extends BDDFactory {
             int x = _index;
             return makeBDD(bdd_support(x));
         }
+        
+        public int supportSize() {
+            int x = _index;
+            return bdd_support_size(x);
+            
+        }
 
         /* (non-Javadoc)
          * @see net.sf.javabdd.BDD#apply(net.sf.javabdd.BDD, net.sf.javabdd.BDDFactory.BDDOp)
@@ -2366,6 +2372,26 @@ public class JFactory extends BDDFactory {
         bdd_enable_reorder();
 
         return res;
+    }
+    
+    int bdd_support_size(int r) {
+        int res = 1;
+
+        CHECKa(r, bddfalse);
+
+        if (r < 2)
+            return 0;
+
+        /* On-demand allocation of support set */
+        if (supportSet == null) {
+            supportSet = new HashSet<Integer>();
+        }
+        supportSet.clear();
+
+        support_rec(r, supportSet);
+        bdd_unmark(r);
+        
+        return supportSet.size();
     }
 
     void support_rec(int r, Set<Integer> support) {
