@@ -3,8 +3,10 @@
 // Licensed under the terms of the GNU LGPL; see COPYING for details.
 package net.sf.javabdd;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -2361,7 +2363,9 @@ public class JFactory extends BDDFactory {
         support_rec(r, supportSet);
         bdd_unmark(r);
 
-        for (int n : supportSet) {
+        ArrayList<Integer> supportList = new ArrayList<Integer>(supportSet);
+        Collections.sort(supportList, Collections.reverseOrder());
+        for (int n : supportList) {
             int tmp;
             bdd_addref(res);
             tmp = bdd_makenode(n, 0, res);
