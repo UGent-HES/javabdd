@@ -2890,7 +2890,7 @@ public class JFactory extends BDDFactory {
         return size;
     }
 
-    void bdd_gbc() {
+    public void bdd_gbc() {
         int r;
         int n;
         long c2, c1 = clock();
